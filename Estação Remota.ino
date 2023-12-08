@@ -1,3 +1,17 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// Sistema de Supervisão e Controle Aplicado a Sistema de  //
+// Irrigação para Pequenos Agricultores do Distrito Federal//
+//           Trabalho de Conclusão de Curso                //
+//             Firmware da Estação Remota                  //
+//                                                         //
+//                                                         //
+//           Tecnologia em Automação Industrial            //
+//                                                         //
+//            Thauany Soares - 171056610031                //
+//                                                         //
+//                    Brasília, 2023                       //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
 #include <OneWire.h>             //Inclusão de biblioteca do protocolo One-Wire do sensor de temperatura.
 #include <DallasTemperature.h>   //Inclusão de biblioteca do sensor de temperatura.
 #include <RF24.h>                //Incusão de biblioteca do transceptor de radiofrequência.
@@ -16,6 +30,7 @@ int valor_analog_umi = 0;       // Valor medido pelo sensor de umidade do solo n
 int analogSoloSeco = 1022;      // Valor de referência para umidade mínima.
 int analogSoloMolhado = 500;    // Valor de referência para umidade máxima.
 int releVal;                    // Nível lógico do relé.
+int releValOld;                 // Nível lógico anterior do relé.
 
 struct DadosSup{                // Pacote de dados a serem enviados para a Central de Dados.
   int valorUmi=0;
@@ -50,9 +65,25 @@ void setup() {
 }
 
 void loop() {                                   
-  for(int i=0; i<=99; i++){
+  for(int i=0; i<=30; i++){
     if (radio.available()) {                   //Verifica se há mensagem no canal.                
       radio.read( &releVal , sizeof(releVal)); //Se houver mensagem, esta é armazenada na variável "releVal".
+      
+      if( releVal != releValOld ){             //Verifica o estado anterior dda variável "releVal".
+        if( releVal == 1) {
+          digitalWrite(control_rele,HIGH);     //Ativa o relé.
+        }else{
+          digitalWrite(control_rele,LOW);
+        }
+
+        releValOld = releVal;                  //Armazena o valor atual na variável de controle "releValOld".
+      } else {
+        if(valorUmi >= 30 && valorUmi < 70){   //Verifica o valor de Umidade do Solo.
+          digitalWrite(control_rele,HIGH);     //Ativa o relé
+        } else {
+          digitalWrite(control_rele,LOW);
+        }
+      }
     }
     delay(10); 
   }
@@ -71,7 +102,7 @@ void loop() {
         Serial.println(); 
         temp_sensor.requestTemperatures();    //Faz a requisão da leitura do sensor.
         Serial.print("A temperatura é: ");    
-        dados_env.valor_temp = temp_sensor.getTempCByIndex(0);  //Armazena o valor de temperatura na variável do pacote de dados a ser enviado.
+        dados_env.valor_temp = 26.7; // temp_sensor.getTempCByIndex(0);  //Armazena o valor de temperatura na variável do pacote de dados a ser enviado.
         Serial.print(temp_sensor.getTempCByIndex(0));          
         Serial.println();
         break;
@@ -87,7 +118,6 @@ void loop() {
         Serial.print("Umidade do solo: "); 
         Serial.print(valorUmi);                                                   
         Serial.println("%"); 
-
         dados_env.valorUmi=valorUmi;                   //Armazena o valor de umidade na variável do pacote de dados a ser enviado.  
         
         break;
@@ -111,8 +141,13 @@ void loop() {
         Serial.println(); 
         Serial.print("caso5");
         Serial.println(); 
-        Serial.print("Valore Rele:");
+        Serial.print("Valor Rele:");
         Serial.println(releVal);                      //Informa o valor da variável "releVal" recebido.
+        if(releVal == 1){
+          digitalWrite(control_rele,HIGH);
+        }else{
+          digitalWrite(control_rele,LOW);
+        }
         
         break;
       

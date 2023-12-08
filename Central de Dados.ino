@@ -2,6 +2,7 @@
 // Sistema de Supervisão e Controle Aplicado a Sistema de  //
 // Irrigação para Pequenos Agricultores do Distrito Federal//
 //           Trabalho de Conclusão de Curso                //
+//             Firmware da Central de Dados                //
 //                                                         //
 //           Tecnologia em Automação Industrial            //
 //                                                         //

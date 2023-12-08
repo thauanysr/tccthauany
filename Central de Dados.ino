@@ -1,3 +1,15 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+// Sistema de Supervisão e Controle Aplicado a Sistema de  //
+// Irrigação para Pequenos Agricultores do Distrito Federal//
+//           Trabalho de Conclusão de Curso                //
+//                                                         //
+//           Tecnologia em Automação Industrial            //
+//                                                         //
+//            Thauany Soares - 171056610031                //
+//                                                         //
+//                    Brasília, 2023                       //
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
 
 #define BLYNK_TEMPLATE_ID "TMPL2l8guw1tS"                         //Define o identificador do template no Blynk.
 #define BLYNK_TEMPLATE_NAME "Automação de Sistema de Irrigação"   //Define o nome do template no Blynk.
